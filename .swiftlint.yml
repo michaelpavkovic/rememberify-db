@@ -1,2 +1,6 @@
 excluded:
   - Package.swift
+
+
+identifier_name:
+  min_length: 2
