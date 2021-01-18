@@ -1,7 +1,6 @@
 // swiftlint:disable line_length
 
 import Foundation
-import SwiftCoroutine
 
 struct PlaylistRequest: SpotifyRequest {
     typealias Response = Playlist
@@ -57,7 +56,7 @@ struct PlaylistRequest: SpotifyRequest {
 
         return Playlist(name: playlist.name,
             owner: playlist.owner,
-            tracks: PlaylistTracksInfo(items: items,
+            tracks: Pagination<PlaylistItem>(items: items,
                 limit: playlist.tracks.limit,
                 total: playlist.tracks.total),
             uri: playlist.uri)

@@ -1,14 +1,8 @@
 struct Playlist: Decodable {
     let name: String
     let owner: PlaylistOwner
-    let tracks: PlaylistTracksInfo
+    let tracks: Pagination<PlaylistItem>
     let uri: String
-}
-
-struct PlaylistTracksInfo: Decodable {
-    let items: [PlaylistItem]
-    let limit: Int
-    let total: Int
 }
 
 struct PlaylistOwner: Decodable {

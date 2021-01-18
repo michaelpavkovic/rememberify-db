@@ -1,6 +1,8 @@
 excluded:
   - Package.swift
 
+included:
+  - Sources/**/*
 
 identifier_name:
   min_length: 2
