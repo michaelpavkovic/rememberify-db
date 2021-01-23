@@ -2,14 +2,20 @@
 
 import Foundation
 
-struct CategoriesRequest: SpotifyRequest {
-    typealias Response = Categories
+public struct CategoriesRequest: SpotifyRequest {
+    public typealias Response = Categories
 
-    let token: SpotifyAccessToken
-    let country: String
-    let locale: String
+    public let token: SpotifyAccessToken
+    public let country: String
+    public let locale: String
 
-    func get() -> Response? {
+    public init(token: SpotifyAccessToken, country: String, locale: String) {
+        self.token = token
+        self.country = country
+        self.locale = locale
+    }
+
+    public func get() -> Response? {
         // Get is very similar to PlaylistRequest get, may be good to generalize in the future
         let params = [
             "country": country,

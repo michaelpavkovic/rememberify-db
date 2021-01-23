@@ -7,7 +7,7 @@ private let spotifyDecoder: JSONDecoder = {
     return decoder
 }()
 
-protocol SpotifyRequest {
+public protocol SpotifyRequest {
     associatedtype Response
 
     var token: SpotifyAccessToken { get }
@@ -15,7 +15,7 @@ protocol SpotifyRequest {
     func get() -> Response?
 }
 
-extension SpotifyRequest {
+public extension SpotifyRequest {
     var decoder: JSONDecoder { return spotifyDecoder }
 
     func fetch<Body: Decodable>(request: URLRequest, into type: Body.Type) -> Body? {

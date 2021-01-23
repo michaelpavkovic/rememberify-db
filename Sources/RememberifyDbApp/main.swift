@@ -1,14 +1,9 @@
 import Foundation
-import SwiftCoroutine
+import RememberifyDbLib
 
-let semaphore = DispatchSemaphore(value: 0)
 let coroutineDispatchQueue = DispatchQueue(label: "com.rememberify.rememberify-db.coroutine-dispatch-queue")
 
 func main() {
-    defer {
-        semaphore.signal()
-    }
-
     guard let spotifyAccessToken = SpotifyAccessToken.getAccessToken(spotifyClientId, spotifyClientSecret) else {
         print("Cannot authenticate spotify")
         return
@@ -24,12 +19,8 @@ func main() {
     }
 
     if let categories = request2.get() {
-        print(categories)
+        categories.categories.items.forEach { print($0.id) }
     }
 }
 
-coroutineDispatchQueue.startCoroutine {
-    main()
-}
-
-semaphore.wait()
+runBlocking(in: coroutineDispatchQueue, main)

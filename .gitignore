@@ -4,5 +4,3 @@ Packages
 Package.resolved
 *.xcodeproj
 xcuserdata
-
-Sources/spotify/secrets.swift

@@ -2,14 +2,20 @@
 
 import Foundation
 
-struct PlaylistRequest: SpotifyRequest {
-    typealias Response = Playlist
+public struct PlaylistRequest: SpotifyRequest {
+    public typealias Response = Playlist
 
-    let token: SpotifyAccessToken
-    let playlistId: String
-    let market: String
+    public let token: SpotifyAccessToken
+    public let playlistId: String
+    public let market: String
 
-    func get() -> Response? {
+    public init(token: SpotifyAccessToken, playlistId: String, market: String) {
+        self.token = token
+        self.playlistId = playlistId
+        self.market = market
+    }
+
+    public func get() -> Response? {
         let itemsFields = "items(track(uri,name,album(name,uri),artists(name,uri)))"
 
         let metadataParams = [

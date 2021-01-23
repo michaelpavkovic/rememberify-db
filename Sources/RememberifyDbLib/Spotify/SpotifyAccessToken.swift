@@ -1,27 +1,27 @@
 import Foundation
 
 /// Access token response from Spotify's authorization endpoint
-struct SpotifyAccessToken: Decodable {
+public struct SpotifyAccessToken: Decodable {
     /// Token used for accessing spotify web API
-    let accessToken: String
+    public let accessToken: String
 
     /// Type of `accessToken`
-    let tokenType: String
+    public let tokenType: String
 
     /// `accessToken` lifetime in seconds
-    let expiresIn: Int
+    public let expiresIn: Int
 
     /// Scope (abilities) of `accessToken`
-    let scope: String
+    public let scope: String
 
-    static func from(_ data: Data) -> SpotifyAccessToken? {
+    public static func from(_ data: Data) -> SpotifyAccessToken? {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
 
         return try? decoder.decode(SpotifyAccessToken.self, from: data)
     }
 
-    static func getAccessToken(_ id: String, _ secret: String) -> SpotifyAccessToken? {
+    public static func getAccessToken(_ id: String, _ secret: String) -> SpotifyAccessToken? {
         var request = URLRequest(url: URL(string: "https://accounts.spotify.com/api/token")!)
 
         let encoded = "\(id):\(secret)".toBase64()

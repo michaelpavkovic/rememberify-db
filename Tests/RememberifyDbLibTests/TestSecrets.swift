@@ -1,0 +1,2 @@
+let spotifyClientId = ""
+let spotifyClientSecret = ""

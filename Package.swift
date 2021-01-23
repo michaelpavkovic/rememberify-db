@@ -3,17 +3,26 @@
 import PackageDescription
 
 let package = Package(
-    name: "rememberify-db",
+    name: "RememberifyDbLib",
     products: [
-
+        .library(name: "RememberifyDbLib", targets: ["RememberifyDbLib"]),
+        .executable(name: "RememberifyDbApp", targets: ["RememberifyDbApp"])
     ],
     dependencies: [
         .package(url: "https://github.com/belozierov/SwiftCoroutine", from: "2.1.9")
     ],
     targets: [
         .target(
-            name: "rememberify-db",
+            name: "RememberifyDbLib",
             dependencies: ["SwiftCoroutine"],
-            path: ".")
+            path: "Sources/RememberifyDbLib"),
+        .target(
+            name: "RememberifyDbApp",
+            dependencies: ["RememberifyDbLib", "SwiftCoroutine"],
+            path: "Sources/RememberifyDbApp"),
+        .testTarget(
+            name: "RememberifyDbTests",
+            dependencies: ["RememberifyDbLib"],
+            path: "Tests")
     ]
 )
