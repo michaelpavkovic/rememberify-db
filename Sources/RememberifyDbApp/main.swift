@@ -17,7 +17,7 @@ func main() {
         var playlists: [Playlist] = []
         for category in categories.categories.items! {
             let playlistsRequest = CategoryPlaylistsRequest(token: spotifyAccessToken,
-                categoryId: category.id, country: "US")
+                categoryId: category.id, country: "SE")
 
             do {
                 try Coroutine.delay(.milliseconds(100))
@@ -32,7 +32,6 @@ func main() {
 
         print(playlists.count)
 
-        let file: FileHandle? = FileHandle(forWritingAtPath: "~/Desktop/playlists.json")
         do {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase
