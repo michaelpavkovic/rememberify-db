@@ -21,15 +21,22 @@ public extension SpotifyRequest {
     func fetch<Body: Decodable>(request: URLRequest, into type: Body.Type) -> Body? {
         let dataFuture = URLSession.shared.dataTaskFuture(for: request)
 
+        let data: Data
         do {
-            let data = try dataFuture.await().data
-
-            return try? decoder.decode(Body.self, from: data)
+            data = try dataFuture.await().data
         } catch let error {
-            // TODO: print it for real
-            print(error)
+            print("[SpotifyRequest] [Network Error] \(error)")
+            
+            return nil
         }
 
-        return nil
+        do {
+            return try decoder.decode(Body.self, from: data)
+        } catch let error {
+            print("[SpotifyRequest] [Parsing Error] \(error)")
+            print(String(data: data, encoding: .utf8) ?? "")
+
+            return nil
+        }
     }
 }

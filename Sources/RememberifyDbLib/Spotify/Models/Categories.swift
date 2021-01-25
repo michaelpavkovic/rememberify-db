@@ -1,8 +1,8 @@
-public struct Categories: Decodable {
+public struct Categories: Codable {
     public let categories: Pagination<Category>
 }
 
-public struct Category: Decodable {
+public struct Category: Codable {
     public let id: String
     public let name: String
 }

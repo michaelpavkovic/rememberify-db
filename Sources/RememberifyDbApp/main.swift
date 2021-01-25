@@ -1,5 +1,6 @@
 import Foundation
 import RememberifyDbLib
+import SwiftCoroutine
 
 let coroutineDispatchQueue = DispatchQueue(label: "com.rememberify.rememberify-db.coroutine-dispatch-queue")
 
@@ -10,16 +11,42 @@ func main() {
     }
 
     print(spotifyAccessToken.accessToken)
+    let categoriesRequest = CategoriesRequest(token: spotifyAccessToken, country: "US", locale: "en_US")
 
-    let request = PlaylistRequest(token: spotifyAccessToken, playlistId: "6142ikHFmQeIqgwv2xKltV", market: "US")
-    let request2 = CategoriesRequest(token: spotifyAccessToken, country: "US", locale: "en_US")
+    if let categories = categoriesRequest.get() {
+        var playlists: [Playlist] = []
+        for category in categories.categories.items! {
+            let playlistsRequest = CategoryPlaylistsRequest(token: spotifyAccessToken,
+                categoryId: category.id, country: "US")
 
-    if let playlist = request.get() {
-        print(playlist)
-    }
+            do {
+                try Coroutine.delay(.milliseconds(100))
+            } catch _ {}
 
-    if let categories = request2.get() {
-        categories.categories.items.forEach { print($0.id) }
+            if let playlistsInCategory = playlistsRequest.get(), let items = playlistsInCategory.playlists.items {
+                playlists.append(contentsOf: items)
+            } else {
+                print("Error getting category: \(category.id)")
+            }
+        }
+
+        print(playlists.count)
+
+        let file: FileHandle? = FileHandle(forWritingAtPath: "~/Desktop/playlists.json")
+        do {
+            let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
+            encoder.outputFormatting = .prettyPrinted
+
+            if let data = try? encoder.encode(playlists) {
+                do {
+                    try data.write(to: FileManager.default.urls(for: .desktopDirectory,
+                        in: .userDomainMask)[0].appendingPathComponent("playlists.json"))
+                } catch let error {
+                    print(error)
+                }
+            }
+        }
     }
 }
 

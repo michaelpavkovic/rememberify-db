@@ -31,20 +31,21 @@ public struct CategoriesRequest: SpotifyRequest {
         guard let categories = fetch(request: request, into: Categories.self) else { return nil }
 
         // If no additional pages need to be fetched, return early
-        if categories.categories.items.count == categories.categories.total {
+        if categories.categories.items!.count == categories.categories.total {
             return categories
         }
 
-        var currentOffset = categories.categories.items.count
+        var currentOffset = categories.categories.items!.count
 
-        var pages: [Categories] = []
+        var pages: [[Category]] = [categories.categories.items!]
 
         // Fetch additional pages of categories
         while currentOffset < categories.categories.total {
             let pageParams = [
                 "country": country,
                 "locale": locale,
-                "limit": "\(categories.categories.limit)"
+                "limit": categories.categories.limit!.description,
+                "offset": currentOffset.description
             ]
 
             let pageUrl = "https://api.spotify.com/v1/browse/categories\(getQueryString(for: pageParams))"
@@ -53,13 +54,12 @@ public struct CategoriesRequest: SpotifyRequest {
             pageRequest.addValue("\(token.tokenType) \(token.accessToken)", forHTTPHeaderField: "Authorization")
 
             guard let page = fetch(request: pageRequest, into: Categories.self) else { return nil }
-            pages.append(page)
+            pages.append(page.categories.items!)
 
-            currentOffset += categories.categories.limit
+            currentOffset += categories.categories.limit!
         }
 
-        let items = pages.reduce([]) { (current, toAdd) in current + toAdd.categories.items }
-
-        return Categories(categories: Pagination<Category>(items: items, limit: categories.categories.limit, total: categories.categories.total))
+        return Categories(categories: Pagination<Category>(items: pages.flatMap { $0 },
+            limit: categories.categories.limit, total: categories.categories.total))
     }
 }

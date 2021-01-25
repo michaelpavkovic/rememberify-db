@@ -1,19 +1,23 @@
-public struct Playlist: Decodable {
+public struct Playlist: Codable {
     public let name: String
     public let owner: PlaylistOwner
     public let tracks: Pagination<PlaylistItem>
     public let uri: String
 }
 
-public struct PlaylistOwner: Decodable {
+public struct PlaylistCollection: Codable {
+    public let playlists: Pagination<Playlist>
+}
+
+public struct PlaylistOwner: Codable {
     public let displayName: String
     public let uri: String
 }
 
-public struct PlaylistPage: Decodable {
+public struct PlaylistPage: Codable {
     public let items: [PlaylistItem]
 }
 
-public struct PlaylistItem: Decodable {
+public struct PlaylistItem: Codable {
     public let track: Track
 }

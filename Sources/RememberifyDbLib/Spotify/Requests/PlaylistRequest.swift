@@ -31,13 +31,13 @@ public struct PlaylistRequest: SpotifyRequest {
         guard let playlist = fetch(request: request, into: Playlist.self) else { return nil }
 
         // If no additional pages need to be fetched, return early
-        if playlist.tracks.items.count == playlist.tracks.total {
+        if playlist.tracks.items!.count == playlist.tracks.total {
             return playlist
         }
 
-        var currentOffset = playlist.tracks.items.count
+        var currentOffset = playlist.tracks.items!.count
 
-        var pages: [PlaylistPage] = []
+        var pages: [[PlaylistItem]] = [playlist.tracks.items!]
 
         // Fetch additional pages of tracks
         while currentOffset < playlist.tracks.total {
@@ -53,16 +53,14 @@ public struct PlaylistRequest: SpotifyRequest {
             pageRequest.addValue("\(token.tokenType) \(token.accessToken)", forHTTPHeaderField: "Authorization")
 
             guard let page = fetch(request: pageRequest, into: PlaylistPage.self) else { return nil }
-            pages.append(page)
+            pages.append(page.items)
 
-            currentOffset += playlist.tracks.limit
+            currentOffset += playlist.tracks.limit!
         }
-
-        let items = pages.reduce([]) { (current, toAdd) in current + toAdd.items }
 
         return Playlist(name: playlist.name,
             owner: playlist.owner,
-            tracks: Pagination<PlaylistItem>(items: items,
+            tracks: Pagination<PlaylistItem>(items: pages.flatMap { $0 },
                 limit: playlist.tracks.limit,
                 total: playlist.tracks.total),
             uri: playlist.uri)
